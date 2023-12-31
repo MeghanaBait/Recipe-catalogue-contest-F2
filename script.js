@@ -122,20 +122,56 @@ const recipes = [
 ]
 
 
-const container = document.querySelector('.recipes-container .recipe-cards'); // Corrected selector for the container
+//category filter
+function displayRecipes(categoryId) {
+    let filteredRecipes = recipes;
 
-recipes.forEach(recipe => {
-    const cardClone = document.querySelector('.card').cloneNode(true);
+    switch (categoryId) {
+        case 'cat-1':
+            filteredRecipes = recipes;
+            console.log(filteredRecipes);
+            break;
+        case 'cat-2':
+            filteredRecipes = recipes.filter(recipe => recipe.type === 'veg');
+            console.log(filteredRecipes);
+            break;
+        case 'cat-3':
+            filteredRecipes = recipes.filter(recipe => recipe.type === 'non-veg');
+            console.log(filteredRecipes);
+            break;
+        default:
+            filteredRecipes = recipes;
+            console.log(filteredRecipes);
+            break;
+    }
 
-    cardClone.querySelector('.rec-img').src = recipe.imageSrc; // Added dot for class selector
-    cardClone.querySelector('.rec-type').textContent = recipe.type; // Added dot for class selector
-    cardClone.querySelector('.rec-name').textContent = recipe.name; // Added dot for class selector
-    cardClone.querySelector('.rec-rating').textContent = recipe.rating; // Added dot for class selector
-    cardClone.querySelector('.time').textContent = recipe.time; // Added dot for class selector
+    displayCards(filteredRecipes);
+}
 
-    container.appendChild(cardClone);
+function displayCards(recipes){
+    const container = document.querySelector('.recipes-container .recipe-cards');
+    recipes.forEach(recipe => {
+        const cardClone = document.querySelector('.card').cloneNode(true);
+        
+        cardClone.querySelector('.rec-img').src = recipe.imageSrc;
+        cardClone.querySelector('.rec-type').textContent = recipe.type.charAt(0).toUpperCase() + recipe.type.slice(1);
+        cardClone.querySelector('.rec-name').textContent = recipe.name;
+        cardClone.querySelector('.rec-rating').textContent = recipe.rating;
+        cardClone.querySelector('.time').textContent = recipe.time;
+    
+        container.appendChild(cardClone);
+    });
+
+}
+
+document.querySelectorAll('.category').forEach(category => {
+    category.addEventListener('click', function() {
+        const categoryId = this.id;
+        displayRecipes(categoryId);
+    });
 });
 
+displayCards(recipes);
 
 
 // liked items
@@ -152,7 +188,7 @@ function toggleLike(recipeName) {
 }
 
 document.querySelectorAll('.like').forEach((heartIcon, index) => {
-    heartIcon.addEventListener('click', function() {
+    heartIcon.addEventListener('click', function () {
         const recipeName = recipes[index].name;
         toggleLike(recipeName);
         updateHeartAppearance(heartIcon, recipeName);
